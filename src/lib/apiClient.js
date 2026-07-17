@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api/v1";
+export const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://api-dev.rodlx.com/api/v1";
 
 const AUTH_STORAGE_KEY = "rodlx_technician_auth";
 
@@ -40,16 +41,20 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => {
     if (response.data?.error) {
-      return Promise.reject(new Error(response.data.message || "Something went wrong."));
+      return Promise.reject(
+        new Error(response.data.message || "Something went wrong."),
+      );
     }
     return response.data?.data;
   },
   (error) => {
     const message =
-      error.response?.data?.message || error.message || "Something went wrong. Please try again.";
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong. Please try again.";
     if (error.response?.status === 401) {
       authStorage.clear();
     }
     return Promise.reject(new Error(message));
-  }
+  },
 );
